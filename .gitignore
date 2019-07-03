@@ -1,0 +1,8 @@
+.vs
+.vscode
+.idea
+
+test/Optimg.Tests/obj/
+test/Optimg.Tests/bin/
+src/Optimg/obj/
+src/Optimg/bin/
