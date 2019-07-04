@@ -11,7 +11,7 @@ using JsonSerializer = Amazon.Lambda.Serialization.Json.JsonSerializer;
 
 namespace Optimg 
 {
-    public class Functions
+    public class Function
     {
 
         public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)

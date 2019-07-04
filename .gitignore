@@ -2,6 +2,8 @@
 .vscode
 .idea
 
+.aws-sam
+
 test/Optimg.Tests/obj/
 test/Optimg.Tests/bin/
 src/Optimg/obj/

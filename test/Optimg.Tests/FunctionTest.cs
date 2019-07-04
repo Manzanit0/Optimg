@@ -9,7 +9,7 @@ namespace Optimg.Tests
         [Fact]
         public void TetGetMethod()
         {
-            var functions = new Functions();
+            var functions = new Function();
             var request = new APIGatewayProxyRequest();
             var context = new TestLambdaContext();
             

@@ -8,7 +8,7 @@
 		"Get" : {
 			"Type" : "AWS::Serverless::Function",
 			"Properties": {
-				"Handler": "Optimg::Optimg.Functions::Get",
+				"Handler": "Optimg::Optimg.Function::Get",
 				"Runtime": "dotnetcore2.1",
 				"CodeUri": "",
 				"MemorySize": 256,
