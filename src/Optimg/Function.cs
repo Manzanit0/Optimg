@@ -1,40 +1,48 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
-
-using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
+using Amazon.Lambda.Core;
+using Newtonsoft.Json;
+using JsonSerializer = Amazon.Lambda.Serialization.Json.JsonSerializer;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
+[assembly: LambdaSerializer(typeof(JsonSerializer))]
 
-namespace Optimg
+namespace Optimg 
 {
     public class Functions
     {
-        /// <summary>
-        /// Default constructor that Lambda will invoke.
-        /// </summary>
-        public Functions()
-        {
-        }
 
-        // https://aws.amazon.com/blogs/compute/developing-net-core-aws-lambda-functions/
         public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            // Triggers from S3
-            // https://docs.aws.amazon.com/lambda/latest/dg/with-s3.html
-            // TODO – Parse S3 event, optimize image and return new URL
-            
-            context.Logger.LogLine("Get Request\n");
+            LogMessage(context, "Processing request started");
+            return CreateResponse(DateTime.Now);
+        }
+
+        private APIGatewayProxyResponse CreateResponse(DateTime? result)
+        {
+            var statusCode = result != null ? (int) HttpStatusCode.OK : (int) HttpStatusCode.InternalServerError;
+
+            var body = result != null ? JsonConvert.SerializeObject(result) : string.Empty;
 
             var response = new APIGatewayProxyResponse
             {
-                StatusCode = (int)HttpStatusCode.OK,
-                Body = "Hello AWS Serverless",
-                Headers = new Dictionary<string, string> { { "Content-Type", "text/plain" } }
+                StatusCode = statusCode,
+                Body = body,
+                Headers = new Dictionary<string, string>
+                {
+                    {"Content-Type", "application/json"},
+                    {"Access-Control-Allow-Origin", "*"}
+                }
             };
 
             return response;
+        }
+        
+        private void LogMessage(ILambdaContext ctx, string msg)
+        {
+            ctx.Logger.LogLine($"{ctx.AwsRequestId}:{ctx.FunctionName} - {msg}");
         }
     }
 }
