@@ -11,55 +11,70 @@ using static Amazon.S3.Util.S3EventNotification;
 
 namespace Optimg.Tests
 {
-    public class FunctionTest
+    public class FunctionTest : IDisposable 
     {
+        public IAmazonS3 S3Client { get; set; }
+        public string BucketName { get; set; }
+        public string Key { get; set; }
+        
+        public FunctionTest()
+        {
+            InitAWSResources();
+        }
+
+        private async void InitAWSResources()
+        {
+            S3Client = new AmazonS3Client(RegionEndpoint.USWest1);
+
+            BucketName = "lambda-".ToLower() + DateTime.Now.Ticks;
+            Key = "text.txt";
+
+            // Create a bucket an object to setup a test data.
+            await S3Client.PutBucketAsync(BucketName);
+            
+            await S3Client.PutObjectAsync(new PutObjectRequest
+            {
+                BucketName = BucketName,
+                Key = Key,
+                ContentBody = "sample data"
+            });
+        }
+
+        public async void Dispose()
+        {
+            await AmazonS3Util.DeleteS3BucketWithObjectsAsync(S3Client, BucketName);
+        }
+        
         [Fact]
         public async Task TestS3EventLambdaFunction()
         {
-            IAmazonS3 s3Client = new AmazonS3Client(RegionEndpoint.USWest2);
-
-            var bucketName = "lambda-".ToLower() + DateTime.Now.Ticks;
-            var key = "text.txt";
-
-            // Create a bucket an object to setup a test data.
-            await s3Client.PutBucketAsync(bucketName);
-            try
+            // Setup the S3 event object that S3 notifications would create with the
+            // fields used by the Lambda function.
+            var s3Event = new S3Event
             {
-                await s3Client.PutObjectAsync(new PutObjectRequest
+                Records = new List<S3EventNotificationRecord>
                 {
-                    BucketName = bucketName,
-                    Key = key,
-                    ContentBody = "sample data"
-                });
-
-                // Setup the S3 event object that S3 notifications would create with the fields used by the Lambda function.
-                var s3Event = new S3Event
-                {
-                    Records = new List<S3EventNotificationRecord>
+                    new S3EventNotificationRecord
                     {
-                        new S3EventNotificationRecord
+                        AwsRegion = "eu-west-1",
+                        S3 = new S3Entity
                         {
-                            S3 = new S3Entity
-                            {
-                                Bucket = new S3BucketEntity {Name = bucketName },
-                                Object = new S3ObjectEntity {Key = key }
-                            }
+                            Bucket = new S3BucketEntity {Name = BucketName },
+                            Object = new S3ObjectEntity {Key = Key }
                         }
                     }
-                };
+                }
+            };
 
-                // Invoke the lambda function and confirm the content type was returned.
-                var function = new Function(s3Client);
-                var contentType = await function.FunctionHandler(s3Event, null);
+            // Invoke the lambda function and confirm the content type was returned.
+            var function = new Function(new OptimizerStub());
+            var result = await function.FunctionHandler(s3Event, null);
 
-                Assert.Equal("text/plain", contentType);
-
-            }
-            finally
-            {
-                // Clean up the test data
-                await AmazonS3Util.DeleteS3BucketWithObjectsAsync(s3Client, bucketName);
-            }
+            var imageUrl = $"https://s3.eu-west-1.amazonaws.com/{BucketName}/{Key}";
+            var optimizedSlug = $"optimized/{Key}";
+            var expected = $"{imageUrl} <> {optimizedSlug}";
+            
+            Assert.Equal(expected, result);
         }
     }
 }

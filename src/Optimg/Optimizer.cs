@@ -22,20 +22,22 @@ namespace Optimg
             
             client = new Client(connection);
         }
-        
-        public string Optimize(string imageUrl)
+
+        public virtual string Optimize(string imageUrl, string destDirectory)
         {
             var request = new OptimizeWaitRequest(
                 new Uri(imageUrl),
                 Settings.AwsAccountKey,
                 Settings.AwsSecret,
                 Settings.S3Bucket,
-                Settings.S3BucketRegion);
-            
+                Settings.S3BucketRegion) {S3Store = {Path = destDirectory}};
+
+
             var response = client.OptimizeWait(request);
 
             if (response.Result.StatusCode != HttpStatusCode.OK) {
                 // TODO Log something
+                // response.ResultOnSuccess.Error/StatusCode
             }
 
             return response.Result.Body.KrakedUrl;
