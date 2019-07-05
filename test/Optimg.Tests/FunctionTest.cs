@@ -1,22 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Amazon;
 using Xunit;
-using Amazon.Lambda.TestUtilities;
-using Amazon.Lambda.APIGatewayEvents;
+using Amazon.Lambda.S3Events;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Util;
+using static Amazon.S3.Util.S3EventNotification;
 
 namespace Optimg.Tests
 {
     public class FunctionTest
     {
         [Fact]
-        public void TetGetMethod()
+        public async Task TestS3EventLambdaFunction()
         {
-            var functions = new Function();
-            var request = new APIGatewayProxyRequest();
-            var context = new TestLambdaContext();
-            
-            var response = functions.Get(request, context);
-            
-            Assert.Equal(200, response.StatusCode);
-            Assert.Equal("Hello AWS Serverless", response.Body);
+            IAmazonS3 s3Client = new AmazonS3Client(RegionEndpoint.USWest2);
+
+            var bucketName = "lambda-".ToLower() + DateTime.Now.Ticks;
+            var key = "text.txt";
+
+            // Create a bucket an object to setup a test data.
+            await s3Client.PutBucketAsync(bucketName);
+            try
+            {
+                await s3Client.PutObjectAsync(new PutObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = key,
+                    ContentBody = "sample data"
+                });
+
+                // Setup the S3 event object that S3 notifications would create with the fields used by the Lambda function.
+                var s3Event = new S3Event
+                {
+                    Records = new List<S3EventNotificationRecord>
+                    {
+                        new S3EventNotificationRecord
+                        {
+                            S3 = new S3Entity
+                            {
+                                Bucket = new S3BucketEntity {Name = bucketName },
+                                Object = new S3ObjectEntity {Key = key }
+                            }
+                        }
+                    }
+                };
+
+                // Invoke the lambda function and confirm the content type was returned.
+                var function = new Function(s3Client);
+                var contentType = await function.FunctionHandler(s3Event, null);
+
+                Assert.Equal("text/plain", contentType);
+
+            }
+            finally
+            {
+                // Clean up the test data
+                await AmazonS3Util.DeleteS3BucketWithObjectsAsync(s3Client, bucketName);
+            }
         }
     }
 }

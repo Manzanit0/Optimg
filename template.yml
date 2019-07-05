@@ -5,7 +5,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./src/Optimg
-      Handler: Optimg::Optimg.Function::Get
+      Handler: Optimg::Optimg.Function::FunctionHandler
       Runtime: dotnetcore2.1
       Events:
         OptimgApi:
