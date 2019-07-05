@@ -8,10 +8,10 @@
 		"Get" : {
 			"Type" : "AWS::Serverless::Function",
 			"Properties": {
-				"Handler": "Optimg::Optimg.Function::Get",
+				"Handler": "Optimg::Optimg.Function::FunctionHandler",
 				"Runtime": "dotnetcore2.1",
 				"CodeUri": "",
-				"MemorySize": 256,
+				"MemorySize": 512,
 				"Timeout": 30,
 				"Role": null,
 				"Policies": [ "AWSLambdaBasicExecutionRole" ],

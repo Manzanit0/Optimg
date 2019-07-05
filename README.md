@@ -16,7 +16,7 @@ Make sure you populate `src/appsettings.json` with the appropriate values.
 If you don't have a bucket to store the function, create one
 
 ```
-aws s3 mb s3://BUCKET_NAME
+    aws s3 mb s3://BUCKET_NAME
 ```
 
 ### With sam CLI
@@ -24,7 +24,6 @@ aws s3 mb s3://BUCKET_NAME
 1. Install sam CLI, using pip (also available via homebrew)
 ```
     pip install --user aws-sam-cli 
-
 ```
 
 2. Package and deploy application
@@ -60,19 +59,17 @@ If already installed check if new version is available.
 
 2. Deploy application
 ```
-    cd "Optimg/src/Optimg"
-    dotnet lambda deploy-serverless
+    dotnet lambda deploy-function OptimgFunction --project-location src/Optimg
 ```
 
 3. To run the tests
 ```
-    cd "Optimg/test/Optimg.Tests/"
-    dotnet test
+    dotnet test test/Optimg.Tests
 ```
 
 4. To execute the lambda:
 ```
-    dotnet lambda invoke-function MyFunction --payload ./test/testS3Event.json
+    dotnet lambda invoke-function MyFunction --payload test/testS3Event.json
 ```
 
 For more information on the lambda CLI tools please see: https://github.com/aws/aws-extensions-for-dotnet-cli
@@ -81,7 +78,7 @@ For more information on the lambda CLI tools please see: https://github.com/aws/
 
 The main project consists of:
 
+* aws-lambda-tools-defaults.json - default argument settings for use with Visual Studio and command line deployment tools for AWS
 * serverless.template - an AWS CloudFormation Serverless Application Model template file for declaring your Serverless functions and other AWS resources
 * Function.cs - class file containing the C# method mapped to the single function declared in the template file
-* aws-lambda-tools-defaults.json - default argument settings for use with Visual Studio and command line deployment tools for AWS
 

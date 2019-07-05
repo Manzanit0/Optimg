@@ -6,6 +6,5 @@ namespace Optimg.Tests
         {
             return $"{imageUrl} <> {destDirectory}";
         }
-        
     }
 }
