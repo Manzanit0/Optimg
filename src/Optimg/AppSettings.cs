@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -35,8 +36,44 @@ namespace Optimg
                 .Build()
                 .Bind(settings);
 
+            ThrowIfEmptySettings(settings);
+
             return settings;
         }
 
+        public static void ThrowIfEmptySettings(AppSettings settings)
+        {
+            var emptyMessage = "is empty – please check the appsettings.json file";
+            
+            if (String.IsNullOrEmpty(settings.AwsSecret))
+            {
+                throw new Exception($"AWS Secret {emptyMessage}");
+            }
+            
+            if (String.IsNullOrEmpty(settings.AwsAccountKey))
+            {
+                throw new Exception($"AWS Account Key {emptyMessage}");
+            }
+            
+            if (String.IsNullOrEmpty(settings.KrakenApiKey))
+            {
+                throw new Exception($"Kraken API Key {emptyMessage}");
+            }
+            
+            if (String.IsNullOrEmpty(settings.KrakenApiSecret))
+            {
+                throw new Exception($"Kraken API Secret {emptyMessage}");
+            }
+            
+            if (String.IsNullOrEmpty(settings.S3Bucket))
+            {
+                throw new Exception($"S3 Bucket name {emptyMessage}");
+            }
+            
+            if (String.IsNullOrEmpty(settings.S3BucketRegion))
+            {
+                throw new Exception($"S3 Bucket region {emptyMessage}");
+            }
+        }
     }
 }

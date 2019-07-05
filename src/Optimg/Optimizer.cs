@@ -10,7 +10,7 @@ namespace Optimg
     public class Optimizer
     {
         public AppSettings Settings { get; set; }
-        public Client client { get; set; }
+        public Client Client { get; set; }
         
         public Optimizer()
         {
@@ -20,7 +20,7 @@ namespace Optimg
                 Settings.KrakenApiKey,
                 Settings.KrakenApiSecret);
             
-            client = new Client(connection);
+            Client = new Client(connection);
         }
 
         public virtual string Optimize(string imageUrl, string destDirectory)
@@ -33,11 +33,10 @@ namespace Optimg
                 Settings.S3BucketRegion) {S3Store = {Path = destDirectory}};
 
 
-            var response = client.OptimizeWait(request);
+            var response = Client.OptimizeWait(request);
 
             if (response.Result.StatusCode != HttpStatusCode.OK) {
-                // TODO Log something
-                // response.ResultOnSuccess.Error/StatusCode
+                throw new Exception($"Kraken API Error: {response.Result.Error}");
             }
 
             return response.Result.Body.KrakedUrl;
