@@ -37,6 +37,9 @@ profile you wish.
 
 Once both conditions are met, `terraform apply` away!
 
+For convenience, I have bootstraped a `deploy.sh` script in `scripts/` which builds the project
+before running Terraform.
+
 ### Testing the code
 
 To run all the unit tests in the suite, run:
