@@ -8,3 +8,9 @@ test/Optimg.Tests/obj/
 test/Optimg.Tests/bin/
 src/Optimg/obj/
 src/Optimg/bin/
+
+.terraform/
+terraform.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+lambda.zip
