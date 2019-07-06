@@ -4,12 +4,5 @@
   "function-runtime":"dotnetcore2.1",
   "configuration": "Release",
   "framework": "netcoreapp2.1",
-  "s3-prefix": "Optimg/",
-  "template": "serverless.template",
-  "template-parameters": "",
-  "function-memory-size" : 512,
-  "function-timeout" : 15,
-  "function-handler" : "Optimg::Optimg.Function::FunctionHandler",
-  "stack-name": "optimg-stack",
-  "s3-bucket": "optimizations-test"
+  "function-handler" : "Optimg::Optimg.Function::FunctionHandler"
 }
