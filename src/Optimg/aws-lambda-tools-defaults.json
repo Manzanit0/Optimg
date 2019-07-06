@@ -9,5 +9,7 @@
   "template-parameters": "",
   "function-memory-size" : 512,
   "function-timeout" : 15,
-  "function-handler" : "Optimg::Optimg.Function::FunctionHandler"
+  "function-handler" : "Optimg::Optimg.Function::FunctionHandler",
+  "stack-name": "optimg-stack",
+  "s3-bucket": "optimizations-test"
 }

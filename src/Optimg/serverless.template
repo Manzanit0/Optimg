@@ -4,8 +4,7 @@
 	"Description" : "An AWS Serverless Application.",
 
 	"Resources" : {
-
-		"Get" : {
+		"OptimgFunction" : {
 			"Type" : "AWS::Serverless::Function",
 			"Properties": {
 				"Handler": "Optimg::Optimg.Function::FunctionHandler",
@@ -14,25 +13,8 @@
 				"MemorySize": 512,
 				"Timeout": 30,
 				"Role": null,
-				"Policies": [ "AWSLambdaBasicExecutionRole" ],
-				"Events": {
-					"RootGet": {
-						"Type": "Api",
-						"Properties": {
-							"Path": "/",
-							"Method": "GET"
-						}
-					}
-				}
+				"Policies": [ "AWSLambdaBasicExecutionRole" ]
 			}
-		}
-
-	},
-
-	"Outputs" : {
-		"ApiURL" : {
-			"Description" : "API endpoint URL for Prod environment",
-			"Value" : { "Fn::Sub" : "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/" }
 		}
 	}
 }
