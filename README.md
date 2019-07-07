@@ -38,7 +38,11 @@ profile you wish.
 Once both conditions are met, `terraform apply` away!
 
 For convenience, I have bootstraped a `deploy.sh` script in `scripts/` which builds the project
-before running Terraform.
+before running Terraform and also deploys the newest version of the code. To run it:
+
+```
+./scripts/deploy.sh lambda_name
+```
 
 ### Testing the code
 
