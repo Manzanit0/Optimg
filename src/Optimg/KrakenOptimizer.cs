@@ -7,12 +7,12 @@ using OptimizeWaitRequest = Kraken.Model.S3.OptimizeWaitRequest;
 
 namespace Optimg
 {
-    public class Optimizer
+    public class KrakenOptimizer : IOptimizer
     {
         public AppSettings Settings { get; set; }
         public Client Client { get; set; }
         
-        public Optimizer()
+        public KrakenOptimizer()
         {
             Settings = AppSettings.Load();
             

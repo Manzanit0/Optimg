@@ -1,8 +1,8 @@
 namespace Optimg.Tests
 {
-    public class OptimizerStub : Optimizer
+    public class OptimizerStub : IOptimizer
     {
-        public override string Optimize(string imageUrl, string destDirectory)
+        public string Optimize(string imageUrl, string destDirectory)
         {
             return $"{imageUrl} <> {destDirectory}";
         }

@@ -11,13 +11,14 @@ namespace Optimg
 {
     public class Function
     {
-        public Optimizer Optimizer { get; set; }
+        public IOptimizer Optimizer { get; set; }
+        
         public Function()
         {
-            Optimizer = new Optimizer();
+            Optimizer = new KrakenOptimizer();
         }
 
-        public Function(Optimizer optimizer)
+        public Function(IOptimizer optimizer)
         {
             Optimizer = optimizer;
         }

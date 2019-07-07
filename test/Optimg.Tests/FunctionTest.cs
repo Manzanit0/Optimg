@@ -27,7 +27,7 @@ namespace Optimg.Tests
             S3Client = new AmazonS3Client(RegionEndpoint.USWest1);
 
             BucketName = "lambda-".ToLower() + DateTime.Now.Ticks;
-            Key = "text.txt";
+            Key = "images/jake-the-dog.png";
 
             // Create a bucket an object to setup a test data.
             await S3Client.PutBucketAsync(BucketName);
@@ -71,7 +71,7 @@ namespace Optimg.Tests
             var result = await function.FunctionHandler(s3Event, null);
 
             var imageUrl = $"https://s3.eu-west-1.amazonaws.com/{BucketName}/{Key}";
-            var optimizedSlug = $"optimized/{Key}";
+            var optimizedSlug = "optimized-images/jake-the-dog.png";
             var expected = $"{imageUrl} <> {optimizedSlug}";
             
             Assert.Equal(expected, result);
