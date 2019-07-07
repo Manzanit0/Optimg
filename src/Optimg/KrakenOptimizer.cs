@@ -9,16 +9,14 @@ namespace Optimg
 {
     public class KrakenOptimizer : IOptimizer
     {
-        public AppSettings Settings { get; set; }
         public Client Client { get; set; }
         
         public KrakenOptimizer()
         {
-            Settings = AppSettings.Load();
             
             var connection = Connection.Create(
-                Settings.KrakenApiKey,
-                Settings.KrakenApiSecret);
+                AppSettings.KrakenApiKey,
+                AppSettings.KrakenApiSecret);
             
             Client = new Client(connection);
         }
@@ -27,10 +25,10 @@ namespace Optimg
         {
             var request = new OptimizeWaitRequest(
                 new Uri(imageUrl),
-                Settings.AwsAccountKey,
-                Settings.AwsSecret,
-                Settings.S3Bucket,
-                Settings.AWSRegion) {S3Store = {Path = destDirectory}};
+                AppSettings.AwsAccountKey,
+                AppSettings.AwsSecret,
+                AppSettings.S3Bucket,
+                AppSettings.AWSRegion) {S3Store = {Path = destDirectory}};
 
 
             var response = Client.OptimizeWait(request);
