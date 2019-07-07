@@ -32,7 +32,7 @@ namespace Optimg
             
             try
             {
-                return Optimizer.Optimize(imageUrl, $"optimized/{s3Event.Object.Key}");
+                return Optimizer.Optimize(imageUrl, CreateOutputUrl(s3Event.Object.Key));
             }
             catch(Exception e)
             {
@@ -42,6 +42,11 @@ namespace Optimg
                 context.Logger.LogLine(e.StackTrace);
                 throw;
             }
+        }
+
+        private String CreateOutputUrl(string key)
+        {
+            return $"{key}".Replace("images/", "optimized-images/");
         }
     }
 }

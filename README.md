@@ -1,7 +1,15 @@
 # Optimg
 
-Image optimization application which relies on [Kraken.io](Kraken.io) and can
-be easily deployed to AWS lambda, relying in Terraform.
+Image optimization function which relies on [Kraken.io](Kraken.io) and can
+be easily deployed to AWS lambda, relying on Terraform.
+
+The project consists of a lambda with S3 notifications setup to listen to a bucket configured through
+an environment variable. All images uploaded to an `images/` directory within that bucket are picked
+up by the lambda, processed through Kraken and then re-uploaded no another directory, `optimized-images/`.
+
+N.B: The reason why the lambda is only picking up the images uploaded to `images/` and uploaded the
+optimized ones to a different directory is to avoid recursive calls for the same image when it gets
+uploaded.
 
 ## Minimum requirements
 
@@ -10,8 +18,6 @@ be easily deployed to AWS lambda, relying in Terraform.
 * A Kraken.io account
 
 ## Getting started
-
-Make sure you populate `src/appsettings.json` with the appropriate values.
 
 The project uses Terraform for automating the creation of the required infrastructure
 and dotnet CLI for testing the lambda remotely. You can also use the SAM CLI if you prefer,
@@ -24,7 +30,9 @@ have to execute `terraform apply`. Nonetheless, there are some gotchas for this 
 
 - You need to [**set some variables**](https://www.terraform.io/docs/configuration/variables.html),
 either as environment variables, or via a `*.tfvars` file. They include the AWS region where you
-want to create the infrastructure and the S3 Bucket which Optimg will be watching for events.
+want to create the infrastructure and the S3 Bucket which Optimg will be watching for events. To
+check which environment variables need to be set simply execute `terraform apply` once and it will
+prompt you for them.
 
 - You need to **have a bucket already created** which will trigger the events which Optimg will act
 upon. The reason why I didn't automate the creation is because sometimes folks will want to add
