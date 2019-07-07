@@ -30,7 +30,7 @@ namespace Optimg
                 Settings.AwsAccountKey,
                 Settings.AwsSecret,
                 Settings.S3Bucket,
-                Settings.S3BucketRegion) {S3Store = {Path = destDirectory}};
+                Settings.AWSRegion) {S3Store = {Path = destDirectory}};
 
 
             var response = Client.OptimizeWait(request);

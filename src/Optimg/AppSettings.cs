@@ -1,8 +1,4 @@
 using System;
-using System.IO;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Configuration;
 
 namespace Optimg
 {
@@ -13,28 +9,18 @@ namespace Optimg
         public string AwsAccountKey { get; set; }
         public string AwsSecret { get; set; }
         public string S3Bucket { get; set; }
-        public string S3BucketRegion { get; set; }
-        
-        private static string AppSettingsDirectory
-        {
-            get
-            {
-                var exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-                var appPathMatcher = new Regex(@"(?<=file:\\?)[^\\].+");
-                return appPathMatcher.Match(exePath).Value;
-            }
-        }
+        public string AWSRegion { get; set; }
         
         public static AppSettings Load()
         {
             var settings = new AppSettings();
             
-            new ConfigurationBuilder()
-                .SetBasePath(AppSettingsDirectory)
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build()
-                .Bind(settings);
+            settings.AwsSecret = Environment.GetEnvironmentVariable("OPTIMG_AWS_SECRET");
+            settings.AwsAccountKey= Environment.GetEnvironmentVariable("OPTIMG_AWS_ACCOUNT_KEY");
+            settings.S3Bucket = Environment.GetEnvironmentVariable("OPTIMG_AWS_S3_BUCKET");
+            settings.AWSRegion = Environment.GetEnvironmentVariable("OPTIMG_AWS_REGION");
+            settings.KrakenApiKey = Environment.GetEnvironmentVariable("OPTIMG_KRAKEN_API_KEY");
+            settings.KrakenApiSecret = Environment.GetEnvironmentVariable("OPTIMG_KRAKEN_API_SECRET");
 
             ThrowIfEmptySettings(settings);
 
@@ -43,7 +29,7 @@ namespace Optimg
 
         public static void ThrowIfEmptySettings(AppSettings settings)
         {
-            var emptyMessage = "is empty – please check the appsettings.json file";
+            var emptyMessage = "is empty – please check the environment variables";
             
             if (String.IsNullOrEmpty(settings.AwsSecret))
             {
@@ -70,7 +56,7 @@ namespace Optimg
                 throw new Exception($"S3 Bucket name {emptyMessage}");
             }
             
-            if (String.IsNullOrEmpty(settings.S3BucketRegion))
+            if (String.IsNullOrEmpty(settings.AWSRegion))
             {
                 throw new Exception($"S3 Bucket region {emptyMessage}");
             }
